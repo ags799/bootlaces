@@ -22,7 +22,6 @@
   TODO(asharp): document check task (#15)."
   []
   (comp
-    (check/with-eastwood "-t")
     (check/with-kibit "-t")
     (check/with-bikeshed "-t")))
 
