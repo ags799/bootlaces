@@ -5,8 +5,6 @@
             [clojure.java.shell :refer [sh]]
             [tolitius.boot-check :as check]))
 
-(defn greeting [] "Hello, world!")
-
 (defn version
   "Returns the project's version.
 
@@ -25,5 +23,3 @@
   (comp
     (check/with-kibit "-t")
     (check/with-bikeshed "-t")))
-
-(defn -main [] (println (greeting)))
