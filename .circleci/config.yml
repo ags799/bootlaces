@@ -1,0 +1,27 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/bootlaces
+    docker:
+      - image: ags799/boot-docker:c62e6d1  # should match builder image
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 17.06.1-ce  # should match Docker version from image
+      - restore_cache:
+          key: bootlaces-{{checksum "boot.properties" }}-{{ checksum "build.boot" }}
+      - run: boot test check
+      - deploy:
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo 'TODO(asharp): push to clojars (#1)'
+            fi
+      - save_cache:
+          paths:
+            - ~/.m2
+            - ~/.boot/cache/lib
+            - ~/.boot/cache/bin
+          key: bootlaces-{{checksum "boot.properties" }}-{{ checksum "build.boot" }}
+    environment:
+      BOOT_JVM_OPTIONS: "-Xms512m -Xmx1024m"
+      BOOT_WATCHERS_DISABLE: "yes"
