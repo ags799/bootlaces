@@ -3,20 +3,16 @@
                           [org.clojure/clojure ~(clojure-version)]
                           [tolitius/boot-check "0.1.4"]])
 
-(require '[clojure.java.shell]
-         '[tolitius.boot-check :as check]
-         '[adzerk.boot-test :refer :all])
-
-(defn git-version []
-  (clojure.string/trim
-    (:out (clojure.java.shell/sh "git" "rev-parse" "--short" "HEAD"))))
+(require '[tolitius.boot-check :as check]
+         '[adzerk.boot-test :refer :all]
+         '[ags799.bootlaces :refer [version]])
 
 (task-options!
-  pom {:project 'ags799/bootlaces
-       :version (git-version)}
+  pom {:project 'org.clojars.ags799/bootlaces
+       :version (version)}
   aot {:namespace #{'ags799.bootlaces}}
   jar {:main 'ags799.bootlaces}
-  install {:pom "ags799/bootlaces"})
+  install {:pom "org.clojars.ags799/bootlaces"})
 
 (deftask check "Check your code" []
   (comp
