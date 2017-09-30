@@ -10,7 +10,7 @@ jobs:
           version: 17.06.1-ce  # should match Docker version from image
       - restore_cache:
           key: bootlaces-{{checksum "boot.properties" }}-{{ checksum "build.boot" }}
-      - run: boot test check
+      - run: boot check
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then

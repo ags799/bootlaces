@@ -1,10 +1,9 @@
 (ns ags799.bootlaces
+  {:boot/export-tasks true}
   (:gen-class)
   (:require [boot.core :as boot]
             [clojure.java.shell :refer [sh]]
             [tolitius.boot-check :as check]))
-
-(defn greeting [] "Hello, world!")
 
 (defn version
   "Returns the project's version.
@@ -24,5 +23,3 @@
   (comp
     (check/with-kibit "-t")
     (check/with-bikeshed "-t")))
-
-(defn -main [] (println (greeting)))
