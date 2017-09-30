@@ -1,4 +1,5 @@
 (ns ags799.bootlaces
+  {:boot/export-tasks true}
   (:gen-class)
   (:require [boot.core :as boot]
             [clojure.java.shell :refer [sh]]
