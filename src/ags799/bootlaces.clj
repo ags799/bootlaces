@@ -10,6 +10,14 @@
 (defn- short-commit-hash []
   (clojure.string/trim (:out (sh "git" "rev-parse" "--short" "HEAD"))))
 
+(defn bootlaces!
+  "A setup function that must be called before any bootlaces tasks are called."
+  []
+  (boot/set-env! :repositories #(conj %
+                 ["clojars" {:url "https://clojars.org/repo/"
+                             :username (System/getenv "CLOJARS_USERNAME")
+                             :password (System/getenv "CLOJARS_PASSWORD")}])))
+
 (boot/deftask check
   "Checks code for style errors.
 
@@ -43,8 +51,8 @@
 
 (boot/deftask publish
   "Publish uber jar to remote Maven repository."
-  []
-  (comp (uberjar) (push :file "bootlaces-b0b83f6.jar" :repo "clojars.org")))
+  [p project VAL str "Maven group and artifact, separated by a slash"]
+  (comp (uberjar) (push :pom project :repo "clojars")))
 
 (boot/deftask publish-local
   "Publish uber jar to local Maven repository."
