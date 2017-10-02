@@ -1,7 +1,8 @@
 (ns ags799.bootlaces
   {:boot/export-tasks true}
   (:gen-class)
-  (:require [boot.core :as boot]
+  (:require [adzerk.boot-test :as boot-test]
+            [boot.core :as boot]
             [boot.task.built-in :refer [aot pom uber jar install]]
             [clojure.java.shell :refer [sh]]
             [tolitius.boot-check :as check]))
@@ -19,6 +20,11 @@
     (check/with-eastwood "-t" :options {:exclude-linters exclude-linters})
     (check/with-kibit "-t")
     (check/with-bikeshed "-t")))
+
+(boot/deftask verify
+  "Runs tests, ensures coverage, and runs code checks."
+  []
+  (comp (boot-test/test) (check)))
 
 (boot/deftask uberjar
   "Create an uber jar.
