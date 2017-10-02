@@ -1,6 +1,6 @@
- bootlaces
+# bootlaces
 [![CircleCI](https://circleci.com/gh/ags799/bootlaces.svg?style=shield&circle-token=82acf73298c23c3e10fd6e1ac601cb4ccf153efc)](https://circleci.com/gh/ags799/bootlaces)
-[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.ags799/bootlaces.svg)](https://clojars.org/org.clojars.ags799/bootlaces)
+[![Clojars Project](https://img.shields.io/clojars/v/ags799/bootlaces.svg)](https://clojars.org/ags799/bootlaces)
 
 Andrew Sharp's boot configurations for Clojure code.
 

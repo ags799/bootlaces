@@ -5,7 +5,7 @@
 
 (require '[ags799.bootlaces :refer :all])
 
-(bootlaces! 'org.clojars.ags799/bootlaces)
+(bootlaces! 'ags799/bootlaces)
 
 (task-options!
   check {:exclude-linters [:unused-ret-vals]})
