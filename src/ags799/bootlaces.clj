@@ -12,7 +12,7 @@
 (boot/deftask check
   "Checks code for style errors.
 
-  TODO(asharp): document check task (#15)."
+  Runs several linters to analyze code for style errors and common mistakes."
   ; linters named per https://github.com/jonase/eastwood#whats-there"
   [e exclude-linters VAL edn "linters to exclude from eastwood"]
   (comp
