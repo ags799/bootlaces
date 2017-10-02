@@ -13,8 +13,10 @@
   "Checks code for style errors.
 
   TODO(asharp): document check task (#15)."
-  []
+  ; linters named per https://github.com/jonase/eastwood#whats-there"
+  [e exclude-linters VAL edn "linters to exclude from eastwood"]
   (comp
+    (check/with-eastwood "-t" :options {:exclude-linters exclude-linters})
     (check/with-kibit "-t")
     (check/with-bikeshed "-t")))
 
