@@ -2,6 +2,7 @@
   {:boot/export-tasks true}
   (:gen-class)
   (:require [boot.core :as boot]
+            [boot.task.built-in :refer [aot pom uber jar install]]
             [clojure.java.shell :refer [sh]]
             [tolitius.boot-check :as check]))
 
@@ -23,3 +24,20 @@
   (comp
     (check/with-kibit "-t")
     (check/with-bikeshed "-t")))
+
+(boot/deftask uberjar
+  "Create an uber jar.
+
+  Your Clojure source files are compiled ahead-of-time, a POM is generated,
+  and an uber jar with your dependencies is created. This jar is installed to
+  your local Maven repository."
+  []
+  (comp (aot) (pom) (uber) (jar)))
+
+(boot/deftask publish-local
+  "Publish uber jar to local Maven repository.
+
+  An uber jar is created with the uberjar task, and is then installed to your
+  local Maven repository."
+  []
+  (comp (uberjar) (install)))
