@@ -5,6 +5,7 @@
 (require '[ags799.bootlaces :refer [check uberjar publish-local]])
 
 (task-options!
+  check {:exclude-linters [:unused-ret-vals]}
   uberjar {:namespaces #{'ags799.bootlaces}
            :project 'org.clojars.ags799/bootlaces}
   publish-local {:project "org.clojars.ags799/bootlaces"})
