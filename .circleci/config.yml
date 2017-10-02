@@ -8,7 +8,7 @@ jobs:
       - checkout
       - restore_cache:
           key: bootlaces-{{checksum "boot.properties" }}-{{ checksum "build.boot" }}
-      - run: boot check
+      - run: boot verify
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
