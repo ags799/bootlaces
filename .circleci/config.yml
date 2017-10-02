@@ -3,18 +3,16 @@ jobs:
   build:
     working_directory: ~/bootlaces
     docker:
-      - image: ags799/boot-docker:c62e6d1  # should match builder image
+      - image: clojure:boot-2.7.2
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 17.06.1-ce  # should match Docker version from image
       - restore_cache:
           key: bootlaces-{{checksum "boot.properties" }}-{{ checksum "build.boot" }}
       - run: boot check
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              echo 'TODO(asharp): push to clojars (#1)'
+              boot publish
             fi
       - save_cache:
           paths:

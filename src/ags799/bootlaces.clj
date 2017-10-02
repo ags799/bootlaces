@@ -3,7 +3,7 @@
   (:gen-class)
   (:require [adzerk.boot-test :as boot-test]
             [boot.core :as boot]
-            [boot.task.built-in :refer [aot pom uber jar install]]
+            [boot.task.built-in :refer [aot pom uber jar install push]]
             [clojure.java.shell :refer [sh]]
             [tolitius.boot-check :as check]))
 
@@ -36,15 +36,32 @@
    p project VAL sym "Maven group and artifact, separated by a slash"
    n namespaces VAL edn "set of namespaces to be included in the uberjar"]
   (let [the-version (or version (short-commit-hash))]
-    (comp (aot :namespace namespaces)
+    (comp (aot :all true)
           (pom :project project :version the-version)
           (uber)
           (jar))))
 
-(boot/deftask publish-local
-  "Publish uber jar to local Maven repository.
+(boot/deftask publish
+  "Publish uber jar to remote Maven repository."
+  [p project VAL str "Maven group and artifact, separated by a slash"]
+  (comp (uberjar) (push :pom project :repo "clojars")))
 
-  An uber jar is created with the uberjar task, and is then installed to your
-  local Maven repository."
+(boot/deftask publish-local
+  "Publish uber jar to local Maven repository."
   [p project VAL str "Maven group and artifact, separated by a slash"]
   (comp (uberjar) (install :pom project)))
+
+(defn bootlaces!
+  "A setup function that must be called before any bootlaces tasks are called.
+
+  The only parameter is the project's group ID and artifact ID separated by a
+  slash, given as a symbol. For example, 'org.clojure/clojure."
+  [project]
+  (boot/set-env! :repositories #(conj %
+                 ["clojars" {:url "https://clojars.org/repo/"
+                             :username (System/getenv "CLOJARS_USERNAME")
+                             :password (System/getenv "CLOJARS_PASSWORD")}]))
+  (boot/task-options!
+    uberjar {:project project}
+    publish {:project (str project)}
+    publish-local {:project (str project)}))
