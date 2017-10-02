@@ -1,6 +1,5 @@
 (ns ags799.bootlaces
   {:boot/export-tasks true}
-  (:gen-class)
   (:require [adzerk.boot-test :as boot-test]
             [boot.core :as boot]
             [boot.task.built-in :refer [aot pom uber jar install push]]
