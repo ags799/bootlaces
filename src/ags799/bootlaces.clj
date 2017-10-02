@@ -3,7 +3,7 @@
   (:gen-class)
   (:require [adzerk.boot-test :as boot-test]
             [boot.core :as boot]
-            [boot.task.built-in :refer [aot pom uber jar install]]
+            [boot.task.built-in :refer [aot pom uber jar install push]]
             [clojure.java.shell :refer [sh]]
             [tolitius.boot-check :as check]))
 
@@ -41,10 +41,12 @@
           (uber)
           (jar))))
 
-(boot/deftask publish-local
-  "Publish uber jar to local Maven repository.
+(boot/deftask publish
+  "Publish uber jar to remote Maven repository."
+  []
+  (comp (uberjar) (push :file "bootlaces-b0b83f6.jar" :repo "clojars.org")))
 
-  An uber jar is created with the uberjar task, and is then installed to your
-  local Maven repository."
+(boot/deftask publish-local
+  "Publish uber jar to local Maven repository."
   [p project VAL str "Maven group and artifact, separated by a slash"]
   (comp (uberjar) (install :pom project)))
