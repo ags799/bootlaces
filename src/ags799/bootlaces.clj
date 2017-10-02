@@ -38,5 +38,5 @@
 
   An uber jar is created with the uberjar task, and is then installed to your
   local Maven repository."
-  []
-  (comp (uberjar) (install)))
+  [p project VAL str "Maven group and artifact, separated by a slash"]
+  (comp (uberjar) (install :pom project)))

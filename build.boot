@@ -7,4 +7,4 @@
 (task-options!
   uberjar {:namespaces #{'ags799.bootlaces}
            :project 'org.clojars.ags799/bootlaces}
-  install {:pom "org.clojars.ags799/bootlaces"})
+  publish-local {:project "org.clojars.ags799/bootlaces"})
