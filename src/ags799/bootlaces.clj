@@ -22,7 +22,7 @@
     (check/with-bikeshed "-t")))
 
 (boot/deftask verify
-  "Runs tests, ensures coverage, and runs code checks."
+  "One stop shop for all automated code critique: tests, linters, the works."
   []
   (comp (boot-test/test) (check)))
 
