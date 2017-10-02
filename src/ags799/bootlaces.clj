@@ -27,7 +27,7 @@
   [v version VAL str "optional version string, short commit hash by default"
    p project VAL sym "Maven group and artifact, separated by a slash"
    n namespaces VAL edn "set of namespaces to be included in the uberjar"]
-  (let [the-version (if version version (short-commit-hash))]
+  (let [the-version (or version (short-commit-hash))]
     (comp (aot :namespace namespaces)
           (pom :project project :version the-version)
           (uber)
