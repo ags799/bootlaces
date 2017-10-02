@@ -32,4 +32,5 @@ Consult each task's help output for more documentation.
 Prepare your development environment by installing [boot](boot-clj.com).
 
 Check your code against linters with
+
     boot check
