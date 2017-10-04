@@ -3,7 +3,7 @@
   (:require [adzerk.boot-test :as boot-test]
             [ags799.bootlaces.docker :as docker]
             [boot.core :as boot]
-            [boot.task.built-in :refer [aot pom uber jar install push]]
+            [boot.task.built-in :refer [aot pom uber jar install push target]]
             [tolitius.boot-check :as check]
             [clojure.java.shell :refer [sh]]
             [clojure.string]))
@@ -49,6 +49,18 @@
   "Publish uber jar to local Maven repository."
   [p project VAL str "Maven group and artifact, separated by a slash"]
   (comp (uberjar) (install :pom project)))
+
+(boot/deftask docker
+  "Build a Docker image from a default Dockerfile."
+  []
+  (comp (uberjar) (docker/dockerfile) (target) (docker/docker-image)))
+
+(boot/deftask docker-publish
+  "Tag and publish the Docker image.
+
+  Should be run after the docker task."
+  []
+  (comp (docker/docker-tag) (docker/docker-push)))
 
 (defn bootlaces!
   "A setup function that must be called before any bootlaces tasks are called.
