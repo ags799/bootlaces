@@ -11,21 +11,10 @@ Based on, but not a fork of,
 
 This project provides a set of [boot](boot-clj.com) tasks for Clojure projects.
 You can use them by requiring the project in your `build.boot` and calling
-`bootlaces!`.
+`bootlaces!` with the requisite parameters.
 
-Here's an example `build.boot`:
-```clojure
-(set-env! :resource-paths #{"src"}
-          :dependencies `[[org.clojure/clojure ~(clojure-version)]
-                          [tolitius/boot-check "0.1.5"]])
-
-(require '[org.clojars.ags799.bootlaces :refer :all])
-
-; must call this with your Maven group ID and artifact ID
-(bootlaces! 'your.group.id/your.artifact.id)
-```
-
-Consult each task's help output for more documentation.
+View an example project that utilizes this repo
+[here](https://github.com/ags799/clojure-example).
 
 ## Development
 
