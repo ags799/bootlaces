@@ -7,5 +7,4 @@
 
 (bootlaces! 'ags799/bootlaces)
 
-(task-options!
-  check {:exclude-linters [:unused-ret-vals]})
+(task-options! check {:exclude-linters [:unused-ret-vals]})
