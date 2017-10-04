@@ -1,6 +1,7 @@
 (ns ags799.bootlaces.docker
   (:require [clojure.java.shell :refer [sh]]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [boot.core :as boot]))
 
 (defn- default-dockerfile [jar-path]
   (let [entrypoint (format "ENTRYPOINT [\"java\",\"-jar\",\"%s\"]" jar-path)]

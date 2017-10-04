@@ -5,6 +5,7 @@
             [boot.core :as boot]
             [boot.task.built-in :refer [aot pom uber jar install push]]
             [tolitius.boot-check :as check]
+            [clojure.java.shell :refer [sh]]
             [clojure.string]))
 
 (defn- short-commit-hash []
@@ -35,7 +36,7 @@
   [v version VAL str "optional version string, short commit hash by default"
    p project VAL sym "Maven group and artifact, separated by a slash"]
   (comp (aot :all true)
-        (pom :project project :version the-version)
+        (pom :project project :version version)
         (uber)
         (jar)))
 
@@ -62,19 +63,19 @@
                  ["clojars" {:url "https://clojars.org/repo/"
                              :username (System/getenv "CLOJARS_USERNAME")
                              :password (System/getenv "CLOJARS_PASSWORD")}]))
-  let [project-str (str project)
+  (let [project-str (str project)
        maven-coordinates (clojure.string/split project-str #"/")
        group (first maven-coordinates)
        artifact (second maven-coordinates)
        version (short-commit-hash)]
-  (boot/task-options!
-    uberjar {:project project
-             :version version}
-    publish {:project project-str}
-    publish-local {:project project-str}
-    docker/docker-image {:image-name artifact}
-    docker/docker-tag {:group-name group
-                :image-name artifact
-                :tag version}
-    docker/docker-push {:group-name group
-                 :image-name artifact}))
+    (boot/task-options!
+      uberjar {:project project
+               :version version}
+      publish {:project project-str}
+      publish-local {:project project-str}
+      docker/docker-image {:image-name artifact}
+      docker/docker-tag {:group-name group
+                  :image-name artifact
+                  :tag version}
+      docker/docker-push {:group-name group
+                   :image-name artifact})))
