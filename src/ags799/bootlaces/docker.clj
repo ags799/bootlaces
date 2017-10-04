@@ -1,7 +1,8 @@
 (ns ags799.bootlaces.docker
   (:require [clojure.java.shell :refer [sh]]
             [clojure.java.io :as io]
-            [boot.core :as boot]))
+            [boot.core :as boot]
+            [boot.util :as util]))
 
 (defn- default-dockerfile [jar-path]
   (let [entrypoint (format "ENTRYPOINT [\"java\",\"-jar\",\"%s\"]" jar-path)]
@@ -31,6 +32,7 @@
   entrypoint to `java -jar the-jar.jar`."
   []
   (boot/with-pre-wrap fileset
+    (util/info "Writing default Dockerfile...\n")
     (let [jar-path (find-jar (boot/output-files fileset))
           tmp (boot/tmp-dir!)
           dockerfile (io/file tmp "Dockerfile")]
@@ -46,6 +48,7 @@
   task. Docker doesn't seem to play nicely with symlinks, so we ask that you
   write your build artifacts to target/ before trying to build a Docker image."
   [n image-name VAL str "name of the Docker image"]
+  (util/info "Building Docker image...\n")
   (shell "docker" "build" "-t" image-name "target"))
 
 (boot/deftask docker-tag
@@ -55,6 +58,7 @@
   [g group-name VAL str "name of the image's group"
    n image-name VAL str "name of the Docker image"
    t tag VAL str "string to use as tag"]
+  (util/info "Tagging Docker image...\n")
   (shell "docker" "tag" image-name (str group-name "/" image-name ":" tag)))
 
 (boot/deftask docker-push
@@ -66,6 +70,7 @@
   DOCKER_REPOSITORY_PASSWORD accordingly."
   [g group-name VAL str "name of the image's group"
    n image-name VAL str "name of the Docker image"]
+  (util/info "Pushing Docker image...\n")
   (let [username (System/getenv "DOCKER_REPOSITORY_USERNAME")
         password (System/getenv "DOCKER_REPOSITORY_PASSWORD")]
     (shell "docker" "login" "-u" username "-p" password))

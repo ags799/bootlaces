@@ -15,7 +15,7 @@
   "Checks code for style errors.
 
   Runs several linters to analyze code for style errors and common mistakes."
-  ; linters named per https://github.com/jonase/eastwood#whats-there"
+  ; linters named per https://github.com/jonase/eastwood#whats-there
   [e exclude-linters VAL edn "linters to exclude from eastwood"]
   (comp
     (check/with-eastwood "-t" :options {:exclude-linters exclude-linters})
@@ -58,7 +58,7 @@
 (boot/deftask docker-publish
   "Tag and publish the Docker image.
 
-  Should be run after the docker task."
+  Should be preceded by the docker task."
   []
   (comp (docker/docker-tag) (docker/docker-push)))
 
