@@ -48,8 +48,9 @@
   task. Docker doesn't seem to play nicely with symlinks, so we ask that you
   write your build artifacts to target/ before trying to build a Docker image."
   [n image-name VAL str "name of the Docker image"]
-  (util/info "Building Docker image...\n")
-  (shell "docker" "build" "-t" image-name "target"))
+  (boot/with-pass-thru [_]
+    (util/info "Building Docker image...\n")
+    (shell "docker" "build" "-t" image-name "target")))
 
 (boot/deftask docker-tag
   "Tags an image's latest version with the given string.
@@ -58,8 +59,9 @@
   [g group-name VAL str "name of the image's group"
    n image-name VAL str "name of the Docker image"
    t tag VAL str "string to use as tag"]
-  (util/info "Tagging Docker image...\n")
-  (shell "docker" "tag" image-name (str group-name "/" image-name ":" tag)))
+  (boot/with-pass-thru [_]
+    (util/info "Tagging Docker image...\n")
+    (shell "docker" "tag" image-name (str group-name "/" image-name ":" tag))))
 
 (boot/deftask docker-push
   "Logs into some Docker repository and pushes the given Docker image to it.
@@ -70,8 +72,9 @@
   DOCKER_REPOSITORY_PASSWORD accordingly."
   [g group-name VAL str "name of the image's group"
    n image-name VAL str "name of the Docker image"]
-  (util/info "Pushing Docker image...\n")
-  (let [username (System/getenv "DOCKER_REPOSITORY_USERNAME")
-        password (System/getenv "DOCKER_REPOSITORY_PASSWORD")]
-    (shell "docker" "login" "-u" username "-p" password))
-  (shell "docker" "push" (str group-name "/" image-name)))
+  (boot/with-pass-thru [_]
+    (util/info "Pushing Docker image...\n")
+    (let [username (System/getenv "DOCKER_REPOSITORY_USERNAME")
+          password (System/getenv "DOCKER_REPOSITORY_PASSWORD")]
+      (shell "docker" "login" "-u" username "-p" password))
+    (shell "docker" "push" (str group-name "/" image-name))))
