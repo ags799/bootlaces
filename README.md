@@ -20,6 +20,6 @@ View an example project that utilizes this repo
 
 Prepare your development environment by installing [boot](boot-clj.com).
 
-Check your code against linters with
+Verify your code's correctness and quality with
 
-    boot check
+    boot verify
