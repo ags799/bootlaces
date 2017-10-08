@@ -11,12 +11,8 @@ Based on, but not a fork of,
 
 This project provides a set of [boot](boot-clj.com) tasks for Clojure projects.
 You can use them by requiring the project in your `build.boot` and calling
-`bootlaces!` with the requisite parameters.
-
-Note that `bootlaces!` generates a `project.clj` to support
-[Cursive](cursive-ide.com), according to
-[this strategy](https://github.com/cursive-ide/cursive/issues/692#issuecomment-257907140).
-It is recommended that you gitignore this `project.clj`.
+`bootlaces!` with the requisite parameters, and in the requisite context.
+Please read the function's documentation for complete usage information.
 
 View an example project that utilizes this repo
 [here](https://github.com/ags799/clojure-example).
