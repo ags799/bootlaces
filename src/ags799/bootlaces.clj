@@ -4,6 +4,7 @@
             [ags799.bootlaces.docker :as docker]
             [boot.core :as boot]
             [boot.task.built-in :refer [aot pom uber jar install push target]]
+            [boot.lein]
             [tolitius.boot-check :as check]
             [clojure.java.shell :refer [sh]]
             [clojure.string]))
@@ -69,7 +70,15 @@
   slash, given as a symbol. For example, 'org.clojure/clojure.
 
   The short commit hash of the HEAD commit is used as the version. This is
-  done as a fool-proof way of supporting continuous deployment."
+  done as a fool-proof way of supporting continuous deployment.
+
+  Calling this function produces a project.clj file at the root of the
+  repository. This is done to support Cursive (cursive-ide.com). Please
+  gitignore this project.clj file. Note that you'll need to run the boot
+  command to update this file.
+
+  This function should be called in your build.boot file after any calls to
+  task-options! or set-env!."
   [project]
   (boot/set-env! :repositories #(conj %
                  ["clojars" {:url "https://clojars.org/repo/"
@@ -90,4 +99,5 @@
                   :image-name artifact
                   :tag version}
       docker/docker-push {:group-name group
-                   :image-name artifact})))
+                   :image-name artifact})
+    (boot.lein/generate)))
