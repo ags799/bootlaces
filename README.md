@@ -12,7 +12,7 @@ Based on, but not a fork of,
 This project provides a set of [boot](boot-clj.com) tasks for Clojure projects.
 You can use them by requiring the project in your `build.boot` and calling
 `bootlaces!` with the requisite parameters, and in the requisite context.
-Please read the function's documentation for complete usage information.
+Please read the `bootlaces!` documentation for complete usage information.
 
 View an example project that utilizes this repo
 [here](https://github.com/ags799/clojure-example).
