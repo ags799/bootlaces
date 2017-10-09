@@ -61,7 +61,7 @@
    t tag VAL str "string to use as tag"]
   (let [tag-name (str group-name "/" image-name ":" tag)]
     (boot/with-pass-thru [_]
-      (util/info (format "Tagging  %s Docker image as %s...\n)" image-name tag-name))
+      (util/info (format "Tagging %s Docker image as %s...\n)" image-name tag-name))
       (shell "docker" "tag" image-name tag-name))))
 
 (boot/deftask docker-push
