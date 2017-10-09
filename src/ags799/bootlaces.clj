@@ -21,7 +21,7 @@
   (comp
     (check/with-eastwood "-t" :options {:exclude-linters exclude-linters})
     (check/with-kibit "-t")
-    (check/with-bikeshed "-t")))
+    (check/with-bikeshed "-t" :options {:max-line-length 160})))
 
 (boot/deftask verify
   "One stop shop for all automated code critique: tests, linters, the works."
