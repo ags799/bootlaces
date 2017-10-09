@@ -49,7 +49,7 @@
   write your build artifacts to target/ before trying to build a Docker image."
   [n image-name VAL str "name of the Docker image"]
   (boot/with-pass-thru [_]
-    (util/info "Building Docker image...\n")
+    (util/info (format "Building %s Docker image...\n" image-name))
     (shell "docker" "build" "-t" image-name "target")))
 
 (boot/deftask docker-tag
@@ -59,9 +59,10 @@
   [g group-name VAL str "name of the image's group"
    n image-name VAL str "name of the Docker image"
    t tag VAL str "string to use as tag"]
-  (boot/with-pass-thru [_]
-    (util/info "Tagging Docker image...\n")
-    (shell "docker" "tag" image-name (str group-name "/" image-name ":" tag))))
+  (let [tag-name (str group-name "/" image-name ":" tag)]
+    (boot/with-pass-thru [_]
+      (util/info (format "Tagging  %s Docker image as %s...\n)" image-name tag-name))
+      (shell "docker" "tag" image-name tag-name))))
 
 (boot/deftask docker-push
   "Logs into some Docker repository and pushes the given Docker image to it.
@@ -72,9 +73,10 @@
   DOCKER_REPOSITORY_PASSWORD accordingly."
   [g group-name VAL str "name of the image's group"
    n image-name VAL str "name of the Docker image"]
-  (boot/with-pass-thru [_]
-    (util/info "Pushing Docker image...\n")
-    (let [username (System/getenv "DOCKER_REPOSITORY_USERNAME")
-          password (System/getenv "DOCKER_REPOSITORY_PASSWORD")]
-      (shell "docker" "login" "-u" username "-p" password))
-    (shell "docker" "push" (str group-name "/" image-name))))
+  (let [pushed-name (str group-name "/" image-name)
+        username (System/getenv "DOCKER_REPOSITORY_USERNAME")
+        password (System/getenv "DOCKER_REPOSITORY_PASSWORD")]
+    (boot/with-pass-thru [_]
+      (util/info (format "Pushing %s Docker image...\n" pushed-name))
+      (shell "docker" "login" "-u" username "-p" password)
+      (shell "docker" "push" pushed-name))))
