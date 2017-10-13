@@ -25,8 +25,10 @@
 
 (boot/deftask verify
   "One stop shop for all automated code critique: tests, linters, the works."
-  []
-  (comp (boot-test/test) (check)))
+  [_ integration-test-namespaces-prefix VAL str "prefix of integration tests' namespaces"]
+  (let [escaped-prefix (clojure.string/replace integration-test-namespaces-prefix "." "\\.")
+        exclusion-pattern (re-pattern (str escaped-prefix ".*"))]
+    (comp (boot-test/test :exclude exclusion-pattern) (check))))
 
 (boot/deftask uberjar
   "Create an uber jar.
@@ -85,19 +87,20 @@
                              :username (System/getenv "CLOJARS_USERNAME")
                              :password (System/getenv "CLOJARS_PASSWORD")}]))
   (let [project-str (str project)
-       maven-coordinates (clojure.string/split project-str #"/")
-       group (first maven-coordinates)
-       artifact (second maven-coordinates)
-       version (short-commit-hash)]
+        maven-coordinates (clojure.string/split project-str #"/")
+        group (first maven-coordinates)
+        artifact (second maven-coordinates)
+        version (short-commit-hash)]
     (boot/task-options!
+      verify {:integration-test-namespaces-prefix (str group "." artifact ".integration")}
       uberjar {:project project
                :version version}
       publish {:project project-str}
       publish-local {:project project-str}
       docker/docker-image {:image-name artifact}
       docker/docker-tag {:group-name group
-                  :image-name artifact
-                  :tag version}
+                         :image-name artifact
+                         :tag        version}
       docker/docker-push {:group-name group
-                   :image-name artifact})
+                          :image-name artifact})
     (boot.lein/generate)))
