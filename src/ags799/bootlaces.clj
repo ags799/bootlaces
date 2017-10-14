@@ -12,6 +12,20 @@
 (defn- short-commit-hash []
   (clojure.string/trim (:out (sh "git" "rev-parse" "--short" "HEAD"))))
 
+(boot/deftask integration-test
+  "Runs integration tests."
+  [_ integration-test-namespaces-prefix VAL str "prefix of integration tests' namespaces"]
+  (let [escaped-prefix (clojure.string/replace integration-test-namespaces-prefix "." "\\.")
+        inclusion-pattern (re-pattern (str escaped-prefix ".*"))]
+    (boot-test/test :include inclusion-pattern)))
+
+(boot/deftask unit-test
+  "Runs unit tests."
+  [_ integration-test-namespaces-prefix VAL str "prefix of integration tests' namespaces"]
+  (let [escaped-prefix (clojure.string/replace integration-test-namespaces-prefix "." "\\.")
+        exclusion-pattern (re-pattern (str escaped-prefix ".*"))]
+    (boot-test/test :exclude exclusion-pattern)))
+
 (boot/deftask check
   "Checks code for style errors.
 
@@ -26,7 +40,7 @@
 (boot/deftask verify
   "One stop shop for all automated code critique: tests, linters, the works."
   []
-  (comp (boot-test/test) (check)))
+  (comp (unit-test) (check) (integration-test)))
 
 (boot/deftask uberjar
   "Create an uber jar.
@@ -77,6 +91,12 @@
   gitignore this project.clj file. Note that you'll need to run the boot
   command to update this file.
 
+  Calling this function assumes you have a set of integration tests under a
+  namespace corresponding to your group-ID/artifact-ID argument: any namespace
+  matching the regex \"group-ID\\.artifact-ID\\.integration.*\" will be skipped
+  by the unit-test task and will be the only tests run by the integration-test
+  task.
+
   This function should be called in your build.boot file after any calls to
   task-options! or set-env!."
   [project]
@@ -85,19 +105,22 @@
                              :username (System/getenv "CLOJARS_USERNAME")
                              :password (System/getenv "CLOJARS_PASSWORD")}]))
   (let [project-str (str project)
-       maven-coordinates (clojure.string/split project-str #"/")
-       group (first maven-coordinates)
-       artifact (second maven-coordinates)
-       version (short-commit-hash)]
+        maven-coordinates (clojure.string/split project-str #"/")
+        group (first maven-coordinates)
+        artifact (second maven-coordinates)
+        version (short-commit-hash)
+        integration-test-namespaces-prefix (str group "." artifact ".integration")]
     (boot/task-options!
+      unit-test {:integration-test-namespaces-prefix integration-test-namespaces-prefix}
+      integration-test {:integration-test-namespaces-prefix integration-test-namespaces-prefix}
       uberjar {:project project
                :version version}
       publish {:project project-str}
       publish-local {:project project-str}
       docker/docker-image {:image-name artifact}
       docker/docker-tag {:group-name group
-                  :image-name artifact
-                  :tag version}
+                         :image-name artifact
+                         :tag        version}
       docker/docker-push {:group-name group
-                   :image-name artifact})
+                          :image-name artifact})
     (boot.lein/generate)))
