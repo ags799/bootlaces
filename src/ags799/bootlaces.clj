@@ -13,11 +13,11 @@
   (clojure.string/trim (:out (sh "git" "rev-parse" "--short" "HEAD"))))
 
 (boot/deftask integration-test
-  "Runs integration tests."
+  "Starts docker-compose services and runs integration tests."
   [_ integration-test-namespaces-prefix VAL str "prefix of integration tests' namespaces"]
   (let [escaped-prefix (clojure.string/replace integration-test-namespaces-prefix "." "\\.")
         inclusion-pattern (re-pattern (str escaped-prefix ".*"))]
-    (boot-test/test :include inclusion-pattern)))
+    (comp (docker/docker-compose-up) (boot-test/test :include inclusion-pattern))))
 
 (boot/deftask unit-test
   "Runs unit tests."

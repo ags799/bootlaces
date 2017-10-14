@@ -80,3 +80,10 @@
       (util/info (format "Pushing %s Docker image...\n" pushed-name))
       (shell "docker" "login" "-u" username "-p" password)
       (shell "docker" "push" pushed-name))))
+
+(boot/deftask docker-compose-up
+  "Starts the services defined in docker-compose.yml."
+  []
+  (boot/with-pass-thru [_]
+    (util/info "Starting docker-compose services...")
+    (shell "docker-compose" "up" "-d")))
