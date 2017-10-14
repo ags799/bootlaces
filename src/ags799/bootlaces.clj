@@ -3,6 +3,7 @@
   (:require [adzerk.boot-test :as boot-test]
             [ags799.bootlaces.docker :as docker]
             [boot.core :as boot]
+            [boot.util :as util]
             [boot.task.built-in :refer [aot pom uber jar install push target]]
             [boot.lein]
             [tolitius.boot-check :as check]
@@ -13,11 +14,13 @@
   (clojure.string/trim (:out (sh "git" "rev-parse" "--short" "HEAD"))))
 
 (boot/deftask integration-test
-  "Runs integration tests."
+  "Starts docker-compose services and runs integration tests."
   [_ integration-test-namespaces-prefix VAL str "prefix of integration tests' namespaces"]
   (let [escaped-prefix (clojure.string/replace integration-test-namespaces-prefix "." "\\.")
         inclusion-pattern (re-pattern (str escaped-prefix ".*"))]
-    (boot-test/test :include inclusion-pattern)))
+    (boot/with-pass-thru [_]
+      (if (.exists (clojure.java.io/as-file "docker-compose.yml"))
+        (comp (docker/docker-compose-up) (boot-test/test :include inclusion-pattern))))))
 
 (boot/deftask unit-test
   "Runs unit tests."
