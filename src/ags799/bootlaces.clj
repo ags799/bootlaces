@@ -16,11 +16,11 @@
 (boot/deftask integration-test
   "Starts docker-compose services and runs integration tests."
   [_ integration-test-namespaces-prefix VAL str "prefix of integration tests' namespaces"]
-  (let [escaped-prefix (clojure.string/replace integration-test-namespaces-prefix "." "\\.")
-        inclusion-pattern (re-pattern (str escaped-prefix ".*"))]
-    (boot/with-pass-thru [_]
+    (let [escaped-prefix (clojure.string/replace integration-test-namespaces-prefix "." "\\.")
+          inclusion-pattern (re-pattern (str escaped-prefix ".*"))]
       (if (.exists (clojure.java.io/as-file "docker-compose.yml"))
-        (comp (docker/docker-compose-up) (boot-test/test :include inclusion-pattern))))))
+        (comp (docker/docker-compose-up) (boot-test/test :include inclusion-pattern))
+        (boot/with-pass-thru [_] (util/info "No docker-compose.yml found, skipping integration tests.\n")))))
 
 (boot/deftask unit-test
   "Runs unit tests."
