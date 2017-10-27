@@ -20,7 +20,7 @@
           inclusion-pattern (re-pattern (str escaped-prefix ".*"))]
       (if (.exists (clojure.java.io/as-file "docker-compose.yml"))
         (comp (docker/docker-compose-up) (boot-test/test :include inclusion-pattern))
-        (util/info "No docker-compose.yml found, skipping integration tests."))))
+        (boot/with-pass-thru [_] (util/info "No docker-compose.yml found, skipping integration tests.\n")))))
 
 (boot/deftask unit-test
   "Runs unit tests."
