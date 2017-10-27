@@ -18,7 +18,9 @@
   [_ integration-test-namespaces-prefix VAL str "prefix of integration tests' namespaces"]
     (let [escaped-prefix (clojure.string/replace integration-test-namespaces-prefix "." "\\.")
           inclusion-pattern (re-pattern (str escaped-prefix ".*"))]
-      (comp (docker/docker-compose-up) (boot-test/test :include inclusion-pattern))))
+      (if (.exists (clojure.java.io/as-file "docker-compose.yml"))
+        (comp (docker/docker-compose-up) (boot-test/test :include inclusion-pattern))
+        (util/info "No docker-compose.yml found, skipping integration tests."))))
 
 (boot/deftask unit-test
   "Runs unit tests."
